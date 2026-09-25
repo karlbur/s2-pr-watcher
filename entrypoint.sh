@@ -7,7 +7,7 @@ if [ -z "$GH_URL" ] || [ -z "$GH_TOKEN" ]; then
 fi
 
 NAME="${RUNNER_NAME:-docker-runner-$(hostname)}"
-LABELS="${GH_LABELS:-gpu-llm-node}"
+LABELS="${GH_LABELS:-s2-pr-watcher}"
 
 echo "Configuring GitHub Runner: $NAME for $GH_URL..."
 

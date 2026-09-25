@@ -20,7 +20,7 @@ services:
       - GH_URL=${PROJ_A_URL}
       - GH_TOKEN=${PROJ_A_TOKEN}
       - RUNNER_NAME=runner-${PROJ_A_NAME}
-      - GH_LABELS=gpu-llm-node
+      - GH_LABELS=${RUNNER_LABEL:-s2-pr-watcher}
 
   runner-frontend:
     <<: *runner-base
@@ -29,4 +29,4 @@ services:
       - GH_URL=${PROJ_B_URL}
       - GH_TOKEN=${PROJ_B_TOKEN}
       - RUNNER_NAME=runner-${PROJ_B_NAME}
-      - GH_LABELS=gpu-llm-node
+      - GH_LABELS=${RUNNER_LABEL:-s2-pr-watcher}
