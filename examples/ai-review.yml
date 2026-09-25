@@ -1,0 +1,35 @@
+# Copy this file into EACH target repository as:
+#   .github/workflows/ai-review.yml
+# Then configure (Settings -> Secrets and variables -> Actions):
+#   Secret: LITELLM_API_KEY
+#   Variables (or replace defaults below): LITELLM_URL, AI_REVIEW_MODEL
+
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to review"
+        required: true
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  ai-review:
+    # Must match the runner label defined in docker-compose-runners.yml (GH_LABELS)
+    runs-on: [self-hosted, s2-pr-watcher]
+    steps:
+      - name: Run AI review (no checkout needed — script reads via GitHub API)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          LITELLM_URL: ${{ vars.LITELLM_URL || 'http://host.docker.internal:4000/v1' }}
+          LITELLM_API_KEY: ${{ secrets.LITELLM_API_KEY }}
+          AI_REVIEW_MODEL: ${{ vars.AI_REVIEW_MODEL }}
+        run: python3 /home/runner/scripts/ai_review.py

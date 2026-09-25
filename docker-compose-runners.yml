@@ -1,0 +1,32 @@
+version: '3.8'
+
+x-runner-template: &runner-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  restart: unless-stopped
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  deploy:
+    resources:
+      limits:
+        memory: 512M
+
+services:
+  runner-backend:
+    <<: *runner-base
+    container_name: runner_backend
+    environment:
+      - GH_URL=${PROJ_A_URL}
+      - GH_TOKEN=${PROJ_A_TOKEN}
+      - RUNNER_NAME=runner-${PROJ_A_NAME}
+      - GH_LABELS=gpu-llm-node
+
+  runner-frontend:
+    <<: *runner-base
+    container_name: runner_frontend
+    environment:
+      - GH_URL=${PROJ_B_URL}
+      - GH_TOKEN=${PROJ_B_TOKEN}
+      - RUNNER_NAME=runner-${PROJ_B_NAME}
+      - GH_LABELS=gpu-llm-node
